@@ -9,39 +9,25 @@ actor "Кредитный менеджер" as Manager
 actor "Служба безопасности" as Security
 actor "БКИ" as BKI
 
-
 (Заполнить кредитную заявку) as fillRequest
 (Рассмотреть кредитную заявку) as processRequest
 (Проверить на фрод) as checkFraud
-(Загрузить кредитную историю) as loadCreditHistory
+(Предоставить кредитную историю) as loadCreditHistory
 (Позвонить клиенту) as callClient
-(Перечислить деньги на счёт) as transferMoney
+(Принять решение по выдаче кредита) as makeDecision
+(Ускорить рассмотрение заявки) as fastProcess
 
-processRequest <.. callClient: <<extend>>
 Client --> fillRequest
-VipClient --> fillRequest : "Использует привилегии"
+VipClient --> fastProcess
+processRequest <.. fastProcess : <<extend>> для VIP-клиентов
+processRequest .> fillRequest : <<include>>
+processRequest <.. callClient: <<extend>> для VIP-клиентов
 processRequest .> checkFraud : <<include>>
 processRequest .> loadCreditHistory : <<include>>
-processRequest .> transferMoney : <<include>>
+processRequest .> makeDecision : <<include>>
 
 Manager --> callClient
-Manager --> transferMoney
+Manager --> makeDecision
 BKI --> loadCreditHistory
 Security --> checkFraud
-
 @enduml
-
-
-Создайте диаграмму вариантов использования для процесса «Рассмотрение кредитной
- заявки» с участием сотрудников банка и внешних систем.
-Участвующие акторы:
-
-·         Клиент;
-
-·         Кредитный менеджер;
-
-·         Служба безопасности;
-
-·         Бюро кредитных историй (БКИ).
-
-Должны быть задействованы все типы связей: включение, расширение, обобщение.
