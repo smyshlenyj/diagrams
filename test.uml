@@ -1,0 +1,91 @@
+@startuml
+
+class Profile {
+- fullName: String
+- birthDate: Date
+- avatarLink: String
++ getFullName(): String
++ setFullName(name: String): void
++ getBirthDate(): Date
++ setBirthDate(date: Date): void
++ getAvatarLink(): String
++ setAvatarLink(link: String): void
+}
+
+class User {
+- id: Integer
+- login: String
+- mail: String
+- profile: Profile <<ссылка>>
++ setLogin(login: String) : void
++ setMail(mail: String) : void
++ getLogin() : String
++ getMail() : String
+}
+
+class Student {
+- level: String
+
++ setLevel(level: String) : void
++ getLevel() : String
+}
+
+User --> Profile : имеет профиль (ассоциация, 1)
+
+class Instructor {
+- grade: String
++ getGrade(): String
++ setGrade(grade: String): void
+}
+
+class Course {
+- id: Integer
+- title: String
+- materials: List<Material> 
++ getId(): Integer
++ setId(id: Integer): void
++ getTitle(): String
++ setTitle(title: String): void
++ getMaterials(): List<Material>
++ setMaterials(materials: List<Material>): void
+}
+
+Course *-- Material
+
+class Enrollment {
+- id: Integer
+- role: RoleType
++ getId(): Integer
++ setId(id: Integer): void
++ getRole(): RoleType
++ setRole(role: RoleType): void
+}
+
+Enrollment --> User     : участвует
+Enrollment --> Course   : курс
+Enrollment ..> RoleType : использует
+
+class Material {
+- id: Integer
+- title: String
+- length: Integer
++ getId(): Integer
++ setId(id: Integer): void
++ getTitle(): String
++ setTitle(title: String): void
++ getLength(): Integer
++ setLength(length: Integer): void
+}
+
+enum RoleType {
+  Student
+  Instructor
+}
+
+User <|-- Student    : наследует
+User <|-- Instructor : наследует
+
+User "1" -- "*" Enrollment
+Course "1" -- "*" Enrollment
+
+@enduml
