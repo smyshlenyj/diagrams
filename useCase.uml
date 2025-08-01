@@ -1,0 +1,47 @@
+@startuml
+left to right direction
+actor "Клиент" as Client
+actor "VIP-клиент" as VipClient
+'Обобщение (наследование)
+Client <|-- VipClient
+
+actor "Кредитный менеджер" as Manager
+actor "Служба безопасности" as Security
+actor "БКИ" as BKI
+
+
+(Заполнить кредитную заявку) as fillRequest
+(Рассмотреть кредитную заявку) as processRequest
+(Проверить на фрод) as checkFraud
+(Загрузить кредитную историю) as loadCreditHistory
+(Позвонить клиенту) as callClient
+(Перечислить деньги на счёт) as transferMoney
+
+processRequest <.. callClient: <<extend>>
+Client --> fillRequest
+VipClient --> fillRequest : "Использует привилегии"
+processRequest .> checkFraud : <<include>>
+processRequest .> loadCreditHistory : <<include>>
+processRequest .> transferMoney : <<include>>
+
+Manager --> callClient
+Manager --> transferMoney
+BKI --> loadCreditHistory
+Security --> checkFraud
+
+@enduml
+
+
+Создайте диаграмму вариантов использования для процесса «Рассмотрение кредитной
+ заявки» с участием сотрудников банка и внешних систем.
+Участвующие акторы:
+
+·         Клиент;
+
+·         Кредитный менеджер;
+
+·         Служба безопасности;
+
+·         Бюро кредитных историй (БКИ).
+
+Должны быть задействованы все типы связей: включение, расширение, обобщение.
