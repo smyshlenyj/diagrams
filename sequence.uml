@@ -1,0 +1,46 @@
+@startuml
+actor Клиент
+participant "Мобильное приложение" as App
+participant "Бэкенд" as Backend
+database "База данных" as DB
+participant "СМС-сервис" as SMS
+
+== Инициация перевода ==
+Клиент -> App : Ввод данных перевода
+activate App
+
+App -> Backend : Запрос на перевод
+activate Backend
+
+Backend -> DB : Проверка баланса отправителя
+activate DB
+DB --> Backend : Баланс
+deactivate DB
+
+== Проверка достаточности средств ==
+alt Баланс достаточен
+    Backend -> DB : Списание со счёта отправителя
+    activate DB
+    DB --> Backend : OK
+    deactivate DB
+
+    Backend -> DB : Зачисление на счёт получателя
+    activate DB
+    DB --> Backend : OK
+    deactivate DB
+
+    Backend --> SMS : Отправить уведомление
+    Backend --> App : Успешный перевод
+    deactivate Backend
+
+    App --> Клиент : Уведомление об успехе
+    deactivate App
+
+else Недостаточно средств
+    Backend --> App : Ошибка: недостаточно средств
+    deactivate Backend
+    App --> Клиент : Ошибка перевода
+    deactivate App
+end
+
+@enduml
